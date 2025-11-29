@@ -11,6 +11,7 @@ import com.posSystem.service.StoreService;
 import com.posSystem.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,12 +29,9 @@ public class StoreController {
                                                 @RequestHeader("Authorization") String jwt) throws Exception {
 
         User user = userService.getUserFromJwtToken(jwt);
-        if ("ROLE_ADMIN".equals(user.getRole().toString())) {
-            return ResponseEntity.ok(storeService.createdStore(storeDto, user));
-        }
 
-        throw new Exception("Admin can only Create the Store");
-    }
+        return ResponseEntity.ok(storeService.createdStore(storeDto, user));
+        }
 
     @GetMapping("/{id}")
     public ResponseEntity<StoreDto> getStoreById(@PathVariable Long id,
@@ -61,6 +59,7 @@ public class StoreController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<StoreDto> updateStore(
             @PathVariable Long id,
             @RequestBody StoreDto storeDto) throws Exception{

@@ -48,11 +48,9 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public Store getStoreAdmin() throws Exception {
         User admin = userService.getCurrentUser();
-        if ("ROLE_ADMIN".equals(admin.getRole().toString())) {
-            return storeRepository.findByStoreAdminId(admin.getId());
+        return storeRepository.findByStoreAdminId(admin.getId());
         }
-        throw new Exception("Login through Admin Credentials.");
-    }
+
 
 
     //Only Store Admin can make changes in the store
@@ -61,31 +59,27 @@ public class StoreServiceImpl implements StoreService {
 
         User currentUser =  userService.getCurrentUser();
         Store existing= storeRepository.findByStoreAdminId(currentUser.getId());
-        if ("ROLE_ADMIN".equals(currentUser.getRole().toString())) {
-            if (existing == null) {
+        if (existing == null) {
                 throw new Exception("Store not Found");
             }
-            existing.setBranchName(storeDto.getBranchName());
-            existing.setDescription(storeDto.getDescription());
+        existing.setBranchName(storeDto.getBranchName());
+        existing.setDescription(storeDto.getDescription());
 
-            if (storeDto.getStoreType() != null) {
-                existing.setStoreType(storeDto.getStoreType());
-            }
+        if (storeDto.getStoreType() != null) {
+            existing.setStoreType(storeDto.getStoreType());
+        }
 
-            if (storeDto.getContact() != null) {
+        if (storeDto.getContact() != null) {
                 StoreContact contact = StoreContact.builder()
                         .address(storeDto.getContact().getAddress())
                         .phone(storeDto.getContact().getPhone())
                         .email(storeDto.getContact().getEmail())
                         .build();
                 existing.setContact(contact);
-            }
+        }
             Store updatedStore = storeRepository.save(existing);
             return StoreMapper.toDTO(updatedStore);
         }
-
-        throw new Exception("Admin can only update the store!");
-    }
 
     //Only Store Admin Can Delete the Store
 

@@ -1,6 +1,5 @@
 package com.posSystem.models;
 
-
 import com.posSystem.domain.StoreStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,34 +11,40 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
-public class Store {
+@Builder
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(nullable = false)
+    private String name;
+
+    private String description;
+
+    @Column(nullable = false,unique = true)
+    private String skuId;
+
+    private double mrp;
+
+    private double sellingPrice;
+
     private String brand;
 
-    @OneToOne
-    private  User storeAdmin;
+    private String imageUrl;
+    @ManyToOne
+    private Category category;
+
+    @ManyToOne
+    private Store store;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    private String description;
-
-    private String storeType;
-
-    private StoreStatus status;
-
-    @Embedded
-    private StoreContact contact= new StoreContact();
-
     @PrePersist
     protected void onCreated(){
         createdAt = LocalDateTime.now();
-        status = StoreStatus.PENDING;
     }
     @PreUpdate
     protected void onUpdate(){
