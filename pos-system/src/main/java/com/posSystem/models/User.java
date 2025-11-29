@@ -34,6 +34,9 @@ public class User {
     @Column(nullable = false)
     private String Password;
 
+    @ManyToOne
+    private Store store;
+
     private LocalDateTime createdAt;
     private LocalDateTime updateAt;
     private LocalDateTime lastLogin;

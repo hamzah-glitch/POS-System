@@ -19,6 +19,8 @@ public class Store {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private String branchName;
+
     @OneToOne
     private  User storeAdmin;
 
