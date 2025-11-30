@@ -37,6 +37,9 @@ public class User {
     @ManyToOne
     private Store store;
 
+    @ManyToOne
+    private Branch branch;
+
     private LocalDateTime createdAt;
     private LocalDateTime updateAt;
     private LocalDateTime lastLogin;
