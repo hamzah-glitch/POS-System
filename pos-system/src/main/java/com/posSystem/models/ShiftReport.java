@@ -19,7 +19,7 @@ public class ShiftReport {
     private Long id;
 
     private LocalDateTime shiftStart;
-    private LocalDateTime endShift;
+    private LocalDateTime shiftEnd;
 
     private Double totalSales;
     private Double totalRefunds;

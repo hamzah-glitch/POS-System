@@ -55,9 +55,9 @@ public class ShiftReportServiceImpl implements ShiftReportService {
                         ()-> new Exception("Shift not Found")
                 );
         LocalDateTime shiftEnd=LocalDateTime.now();
-        shiftReport.setEndShift(shiftEnd);
+        shiftReport.setShiftEnd(shiftEnd);
         List<Refund> refunds= refundRepository.findByCashierIdAndCreatedAtBetween(
-                 cashier.getId() ,shiftReport.getShiftStart(), shiftReport.getEndShift()
+                 cashier.getId() ,shiftReport.getShiftStart(), shiftReport.getShiftEnd()
         );
 
         double totalRefunds=refunds.stream().mapToDouble(
@@ -65,7 +65,7 @@ public class ShiftReportServiceImpl implements ShiftReportService {
         ).sum();
 
         List<Order> orders= orderRepository.findByCashierAndCreatedAtBetween(
-                cashier, shiftReport.getShiftStart(), shiftReport.getEndShift()
+                cashier, shiftReport.getShiftStart(), shiftReport.getShiftEnd()
         );
         double totalSales= orders.stream().mapToDouble(Order::getTotalAmount).sum();
         double totalOrders=orders.size();
@@ -115,7 +115,7 @@ public class ShiftReportServiceImpl implements ShiftReportService {
 
     @Override
     public List<ShiftReportDto> getShiftReportByCashierId(Long cashierId) {
-        List<ShiftReport> reports=shiftReportRepository.findByCashierID(cashierId);
+        List<ShiftReport> reports=shiftReportRepository.findByCashierId(cashierId);
         return reports.stream().map(
                 ShiftReportMapper::toDto
         ).collect(Collectors.toList());
@@ -131,7 +131,7 @@ public class ShiftReportServiceImpl implements ShiftReportService {
         List<Order> orders=orderRepository.findByCashierAndCreatedAtBetween(cashier, shiftReport.getShiftStart(), now);
 
         List<Refund> refunds= refundRepository.findByCashierIdAndCreatedAtBetween(
-                cashier.getId() ,shiftReport.getShiftStart(), shiftReport.getEndShift()
+                cashier.getId() ,shiftReport.getShiftStart(), now
         );
 
         double totalRefunds=refunds.stream().mapToDouble(

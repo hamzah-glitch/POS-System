@@ -19,7 +19,7 @@ public class ShiftReportMapper {
         return ShiftReportDto.builder()
                 .id(entity.getId())
                 .shiftStart(entity.getShiftStart())
-                .endShift(entity.getEndShift())
+                .shiftEnd(entity.getShiftEnd())
                 .totalSales(entity.getTotalSales())
                 .totalOrders(entity.getTotalOrders())
                 .totalOrders(entity.getTotalSales())
