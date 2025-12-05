@@ -67,4 +67,10 @@ public class EmployeeController {
         return ResponseEntity.ok(employee);
     }
 
+    @GetMapping()
+    public ResponseEntity<List<UserDto>> getAllEmployee() throws Exception {
+        List<UserDto> employee = employeeService.getAllEmployees();
+        return ResponseEntity.ok(employee);
+    }
+
 }

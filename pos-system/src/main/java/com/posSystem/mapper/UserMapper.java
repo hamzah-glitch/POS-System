@@ -5,6 +5,9 @@ import com.posSystem.payload.dto.UserDto;
 
 public class UserMapper {
     public static UserDto toDTO(User saveUser) {
+        if (saveUser == null) {
+            return null;
+        }
         UserDto userDto = new UserDto();
         userDto.setId(saveUser.getId());
         userDto.setFullName(saveUser.getFullName());
@@ -13,14 +16,14 @@ public class UserMapper {
         userDto.setCreatedAt(saveUser.getCreatedAt());
         userDto.setLastLogin(saveUser.getLastLogin());
         userDto.setPhone(saveUser.getPhone());
-        userDto.setBranchId(saveUser.getBranch() != null?saveUser.getBranch().getId():null);
-        userDto.setStoreId(saveUser.getStore()!=null?saveUser.getStore().getId():null);
+        userDto.setBranchId(saveUser.getBranch() != null ? saveUser.getBranch().getId() : null);
+        userDto.setStoreId(saveUser.getStore() != null ? saveUser.getStore().getId() : null);
         return userDto;
     }
 
-    public static User toEntity(UserDto userDto){
+    public static User toEntity(UserDto userDto) {
         User createdUser = new User();
-        //createdUser.setId(userDto.getId());
+        // createdUser.setId(userDto.getId());
         createdUser.setEmail(userDto.getEmail());
         createdUser.setFullName(userDto.getFullName());
         createdUser.setRole(userDto.getRole());

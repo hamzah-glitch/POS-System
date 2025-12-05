@@ -23,7 +23,7 @@ public class Product {
 
     private String description;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private String skuId;
 
     private double mrp;
@@ -33,6 +33,9 @@ public class Product {
     private String brand;
 
     private String imageUrl;
+
+    private int stockQuantity;
+
     @ManyToOne
     private Category category;
 
@@ -43,11 +46,12 @@ public class Product {
     private LocalDateTime updatedAt;
 
     @PrePersist
-    protected void onCreated(){
+    protected void onCreated() {
         createdAt = LocalDateTime.now();
     }
+
     @PreUpdate
-    protected void onUpdate(){
+    protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
 }

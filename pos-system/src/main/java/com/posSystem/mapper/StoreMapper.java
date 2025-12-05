@@ -7,11 +7,17 @@ import com.posSystem.payload.dto.StoreDto;
 public class StoreMapper {
 
     public static StoreDto toDTO(Store store) {
+        return toDTO(store, true);
+    }
+
+    public static StoreDto toDTO(Store store, boolean includeAdmin) {
         StoreDto storeDto = new StoreDto();
         storeDto.setId(store.getId());
         storeDto.setBranchName(store.getBrand());
         storeDto.setDescription(store.getDescription());
-        storeDto.setStoreAdmin(UserMapper.toDTO(store.getStoreAdmin()));
+        if (includeAdmin) {
+            storeDto.setStoreAdmin(UserMapper.toDTO(store.getAdmin()));
+        }
         storeDto.setStoreType(store.getStoreType());
         storeDto.setContact(store.getContact());
         storeDto.setCreatedAt(store.getCreatedAt());
@@ -25,7 +31,7 @@ public class StoreMapper {
         store.setId(storeDto.getId());
         store.setBrand(storeDto.getBranchName());
         store.setDescription(storeDto.getDescription());
-        store.setStoreAdmin(storeAdmin);
+        store.setAdmin(storeAdmin);
         store.setStoreType(storeDto.getStoreType());
         store.setContact(storeDto.getContact());
         store.setCreatedAt(storeDto.getCreatedAt());

@@ -14,4 +14,5 @@ public interface EmployeeService {
     void deleteEmployee(Long employeeId) throws Exception;
     List<UserDto> findStoreEmployees(Long storeId, UserRole role) throws Exception;
     List<UserDto> findBranchEmployees(Long branchId, UserRole role) throws Exception;
+    List<UserDto> getAllEmployees() throws Exception;
 }

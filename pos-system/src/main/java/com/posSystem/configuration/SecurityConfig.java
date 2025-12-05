@@ -25,43 +25,38 @@ public class SecurityConfig {
             HttpSecurity http) throws Exception {
 
         return http
-                .sessionManagement(menagement ->
-                        menagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(Authorize->
-                        Authorize.requestMatchers("/api/**").authenticated()
-                                .requestMatchers("/api/super-admin/**")
-                                .hasRole("ADMIN")
-                                .anyRequest().permitAll()
-                ).addFilterBefore(new JwtValidator(),
-                        BasicAuthenticationFilter.class
-                ).csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(menagement -> menagement
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(Authorize -> Authorize.requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/api/super-admin/**")
+                        .hasRole("ADMIN")
+                        .anyRequest().permitAll())
+                .addFilterBefore(new JwtValidator(),
+                        BasicAuthenticationFilter.class)
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(
-                        cors -> cors.configurationSource(corsConfigurationSource())
-                ).build();
+                        cors -> cors.configurationSource(corsConfigurationSource()))
+                .build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-private CorsConfigurationSource corsConfigurationSource(){
-    return new CorsConfigurationSource() {
-        @Override
-        public @Nullable CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-            CorsConfiguration cfg = new CorsConfiguration();
-            cfg.setAllowedOrigins(
-                    Arrays.asList(
-                            "http://localhost:5173"
-                    )
-            );
-            cfg.setAllowedMethods(Collections.singletonList("*"));
-            cfg.setAllowCredentials(true);
-            cfg.setAllowedHeaders(Collections.singletonList("*"));
-            cfg.setExposedHeaders(Arrays.asList("Authorization"));
-            cfg.setMaxAge(3600L);
-            return cfg;
-        }
-    };
-}
+    private CorsConfigurationSource corsConfigurationSource() {
+        return new CorsConfigurationSource() {
+            @Override
+            public @Nullable CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                CorsConfiguration cfg = new CorsConfiguration();
+                cfg.setAllowedOriginPatterns(Collections.singletonList("*"));
+                cfg.setAllowedMethods(Collections.singletonList("*"));
+                cfg.setAllowCredentials(true);
+                cfg.setAllowedHeaders(Collections.singletonList("*"));
+                cfg.setExposedHeaders(Arrays.asList("Authorization"));
+                cfg.setMaxAge(3600L);
+                return cfg;
+            }
+        };
+    }
 }

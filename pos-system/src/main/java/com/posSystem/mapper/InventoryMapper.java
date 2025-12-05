@@ -9,7 +9,7 @@ public class InventoryMapper {
 
     public static InventoryDto toDto(Inventory inventory){
         return InventoryDto.builder()
-                .Id(inventory.getId())
+                .id(inventory.getId())
                 .branchId(inventory.getBranch().getId())
                 .productId(inventory.getProduct().getId())
                 .product(ProductMapper.toDto(inventory.getProduct()))

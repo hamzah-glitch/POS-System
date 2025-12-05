@@ -7,13 +7,17 @@ import com.posSystem.models.Order;
 import com.posSystem.models.ShiftReport;
 import com.posSystem.models.User;
 import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RefundDto {
 
     private Long id;

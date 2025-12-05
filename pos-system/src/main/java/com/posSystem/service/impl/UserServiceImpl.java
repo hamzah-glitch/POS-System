@@ -17,7 +17,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
 
@@ -36,7 +35,7 @@ public class UserServiceImpl implements UserService {
     public User getCurrentUser() throws UserException {
         String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
         User user = userRepository.findByEmail(email);
-        if (user == null){
+        if (user == null) {
             throw new UserException("User not Found");
         }
         return user;
@@ -45,7 +44,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByEmail(String email) throws UserException {
         User user = userRepository.findByEmail(email);
-        if (user == null){
+        if (user == null) {
             throw new UserException("User not Found");
         }
         return user;
@@ -54,12 +53,26 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Long id) throws UserException, Exception {
         return userRepository.findById(id).orElseThrow(
-                ()-> new Exception("user not found")
-        );
+                () -> new Exception("user not found"));
     }
 
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public User updateUser(User user, Long id) throws UserException {
+        User existingUser = userRepository.findById(id).orElseThrow(() -> new UserException("User not found"));
+
+        if (user.getFullName() != null) {
+            existingUser.setFullName(user.getFullName());
+        }
+        if (user.getPhone() != null) {
+            existingUser.setPhone(user.getPhone());
+        }
+        // Add other fields as needed, e.g., password (should be encoded)
+
+        return userRepository.save(existingUser);
     }
 }

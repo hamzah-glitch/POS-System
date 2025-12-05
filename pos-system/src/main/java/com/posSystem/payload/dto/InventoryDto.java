@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class InventoryDto {
-    private Long Id;
+    private Long id;
     private BranchDto branch;
     private Long branchId;
     private ProductDto product;

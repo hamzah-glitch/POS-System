@@ -16,6 +16,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer createCustomer(Customer customer) {
+        customer.setCreatedAt(LocalDateTime.now());
         return customerRepository.save(customer);
     }
 

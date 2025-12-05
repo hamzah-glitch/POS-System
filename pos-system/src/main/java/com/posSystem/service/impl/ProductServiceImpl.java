@@ -23,30 +23,25 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final StoreRepository storeRepository;
     private final CategoryRepository categoryRepository;
+
     @Override
     public ProductDto CreateProduct(ProductDto productDto, User user) throws Exception {
         Store store = storeRepository.findById(
-                productDto.getStoreId()
-        ).orElseThrow(
-                ()-> new Exception("store not found")
-        );
-        Category category= categoryRepository.findById(
-                productDto.getCategoryId()
-        ).orElseThrow(
-                ()-> new Exception("category not found")
-        );
+                productDto.getStoreId()).orElseThrow(
+                () -> new Exception("store not found"));
+        Category category = categoryRepository.findById(
+                productDto.getCategoryId()).orElseThrow(
+                () -> new Exception("category not found"));
 
-
-        Product product= ProductMapper.toEntity(productDto, store, category);
-        Product savedProduct= productRepository.save(product);
+        Product product = ProductMapper.toEntity(productDto, store, category);
+        Product savedProduct = productRepository.save(product);
         return ProductMapper.toDto(savedProduct);
     }
 
     @Override
     public ProductDto UpdateProduct(Long id, ProductDto productDto, User user) throws Exception {
         Product product = productRepository.findById(id).orElseThrow(
-                ()-> new Exception("product not found")
-        );
+                () -> new Exception("product not found"));
 
         product.setName(productDto.getName());
         product.setDescription(productDto.getDescription());
@@ -56,19 +51,17 @@ public class ProductServiceImpl implements ProductService {
         product.setSellingPrice(productDto.getSellingPrice());
         product.setUpdatedAt(LocalDateTime.now());
 
-        if(productDto.getCategoryId()!=null){
-            Category category= categoryRepository.findById(productDto.getId())
+        if (productDto.getCategoryId() != null) {
+            Category category = categoryRepository.findById(productDto.getCategoryId())
                     .orElseThrow(
-                            ()->new Exception("category not found")
-                    );
+                            () -> new Exception("category not found"));
 
-            if(category != null)
-            {
+            if (category != null) {
                 product.setCategory(category);
             }
         }
 
-        Product savedProduct=productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
 
         return ProductMapper.toDto(savedProduct);
     }
@@ -76,8 +69,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(Long id, User user) throws Exception {
         Product product = productRepository.findById(id).orElseThrow(
-                ()-> new Exception("product not found")
-        );
+                () -> new Exception("product not found"));
 
         productRepository.delete(product);
     }
@@ -89,7 +81,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> getProductByStoreId(Long storeId) {
-        List<Product> products= productRepository.findByStoreId(storeId);
+        List<Product> products = productRepository.findByStoreId(storeId);
         return products.stream()
                 .map(ProductMapper::toDto)
                 .collect(Collectors.toList());
@@ -97,7 +89,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> searchByKeyword(Long storeId, String Keyword) {
-        List<Product> products= productRepository.searchByKeyword(storeId, Keyword);
+        List<Product> products = productRepository.searchByKeyword(storeId, Keyword);
         return products.stream()
                 .map(ProductMapper::toDto)
                 .collect(Collectors.toList());

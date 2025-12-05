@@ -34,16 +34,16 @@ public class CategoryController {
     @PutMapping("{id}")
     public ResponseEntity<CategoryDto> updateCategory(
             @RequestBody CategoryDto categoryDto,
-            @PathVariable Long Id) throws Exception {
+            @PathVariable Long id) throws Exception {
         return ResponseEntity.ok(
-                categoryService.updateCategory(Id,categoryDto)
+                categoryService.updateCategory(id,categoryDto)
         );
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<ApiResponse> deleteCategory(
-            @PathVariable Long Id) throws Exception {
-        categoryService.deleteCategory(Id);
+            @PathVariable Long id) throws Exception {
+        categoryService.deleteCategory(id);
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setMessage("Category deleted Successfully");
         return ResponseEntity.ok(

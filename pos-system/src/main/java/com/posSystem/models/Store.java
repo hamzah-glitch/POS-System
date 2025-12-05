@@ -1,6 +1,5 @@
 package com.posSystem.models;
 
-
 import com.posSystem.domain.StoreStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,8 +20,8 @@ public class Store {
 
     private String brand;
 
-    @OneToOne
-    private  User storeAdmin;
+    @ManyToOne
+    private User admin;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -34,15 +33,16 @@ public class Store {
     private StoreStatus status;
 
     @Embedded
-    private StoreContact contact= new StoreContact();
+    private StoreContact contact = new StoreContact();
 
     @PrePersist
-    protected void onCreated(){
+    protected void onCreated() {
         createdAt = LocalDateTime.now();
         status = StoreStatus.PENDING;
     }
+
     @PreUpdate
-    protected void onUpdate(){
+    protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
 }
