@@ -227,8 +227,8 @@ const Products: React.FC = () => {
                                                 {product.category?.name || 'Uncategorized'}
                                             </td>
                                             <td className="px-6 py-4 text-sm text-gray-600">
-                                                <div>Selling: ${product.sellingPrice}</div>
-                                                <div className="text-xs text-gray-400 line-through">MRP: ${product.mrp}</div>
+                                                <div>Selling: PKR {product.sellingPrice}</div>
+                                                <div className="text-xs text-gray-400 line-through">MRP: PKR {product.mrp}</div>
                                             </td>
                                             <td className="px-6 py-4 text-sm text-gray-600">{product.skuId}</td>
                                             <td className="px-6 py-4 text-right space-x-2">

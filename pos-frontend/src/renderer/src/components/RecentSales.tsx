@@ -42,7 +42,7 @@ export default function RecentSales({ transactions }: RecentSalesProps) {
                                 <tr key={tx.id} className="border-b border-gray-50 last:border-0">
                                     <td className="py-3 font-medium text-gray-800">#{tx.id}</td>
                                     <td className="py-3 text-gray-600">{tx.customer}</td>
-                                    <td className="py-3 font-bold text-gray-800">₹{tx.amount}</td>
+                                    <td className="py-3 font-bold text-gray-800">PKR {tx.amount}</td>
                                     <td className="py-3">
                                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[tx.status] || 'bg-gray-100 text-gray-700'}`}>
                                             {tx.status}

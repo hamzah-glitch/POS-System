@@ -31,7 +31,9 @@ export default function Login() {
                 } catch (shiftError) {
                     console.error('Failed to start shift:', shiftError);
                 }
-                navigate('/cashier-dashboard');
+                navigate('/cashier');
+            } else if (userRole === 'ROLE_BRANCH_MANAGER') {
+                navigate('/branch-dashboard');
             } else if (userRole === 'ROLE_ADMIN' || userRole === 'ROLE_STORE_ADMIN') {
                 navigate('/dashboard');
             } else {

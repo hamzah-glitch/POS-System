@@ -78,7 +78,7 @@ const Reports: React.FC = () => {
                                             <CreditCard className="w-5 h-5 text-green-600" />
                                         </div>
                                     </div>
-                                    <div className="text-2xl font-bold text-gray-900">$12,345.00</div>
+                                    <div className="text-2xl font-bold text-gray-900">PKR 12,345.00</div>
                                     <div className="text-sm text-green-600 mt-1">+15% from last week</div>
                                 </div>
                                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
@@ -98,7 +98,7 @@ const Reports: React.FC = () => {
                                             <TrendingUp className="w-5 h-5 text-purple-600" />
                                         </div>
                                     </div>
-                                    <div className="text-2xl font-bold text-gray-900">$79.00</div>
+                                    <div className="text-2xl font-bold text-gray-900">PKR 79.00</div>
                                     <div className="text-sm text-purple-600 mt-1">+2% from last week</div>
                                 </div>
                             </div>

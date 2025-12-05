@@ -121,7 +121,7 @@ const Alerts: React.FC = () => {
                                                         </td>
                                                         <td className="px-4 py-3 text-gray-500">{product.categoryId}</td>
                                                         <td className="px-4 py-3 text-red-600 font-bold">{product.stockQuantity}</td>
-                                                        <td className="px-4 py-3 text-gray-900">${product.sellingPrice}</td>
+                                                        <td className="px-4 py-3 text-gray-900">PKR {product.sellingPrice}</td>
                                                     </tr>
                                                 ))
                                             )}
@@ -186,7 +186,7 @@ const Alerts: React.FC = () => {
                                                     <tr key={index} className="border-b hover:bg-gray-50">
                                                         <td className="px-4 py-3 text-gray-500">{spike.id}</td>
                                                         <td className="px-4 py-3 font-medium text-gray-900">{spike.cashierName}</td>
-                                                        <td className="px-4 py-3 text-red-600 font-bold">${spike.amount.toFixed(2)}</td>
+                                                        <td className="px-4 py-3 text-red-600 font-bold">PKR {spike.amount.toFixed(2)}</td>
                                                         <td className="px-4 py-3 text-gray-500">{spike.reason}</td>
                                                     </tr>
                                                 ))

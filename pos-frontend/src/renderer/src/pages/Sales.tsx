@@ -57,7 +57,7 @@ const Sales: React.FC = () => {
                                     <div className="flex justify-between items-start">
                                         <div>
                                             <p className="text-sm text-gray-500 mb-1">Total Sales</p>
-                                            <h3 className="text-2xl font-bold text-gray-800">₹{stats?.totalSales.toLocaleString()}</h3>
+                                            <h3 className="text-2xl font-bold text-gray-800">PKR {stats?.totalSales.toLocaleString()}</h3>
                                             <p className="text-xs text-green-500 mt-1">+0% from last week</p>
                                         </div>
                                         <div className="p-3 bg-green-100 rounded-full text-green-600">
@@ -96,7 +96,7 @@ const Sales: React.FC = () => {
                                     <div className="flex justify-between items-start">
                                         <div>
                                             <p className="text-sm text-gray-500 mb-1">Avg. Order Value</p>
-                                            <h3 className="text-2xl font-bold text-gray-800">₹{stats?.avgOrderValue.toFixed(0)}</h3>
+                                            <h3 className="text-2xl font-bold text-gray-800">PKR {stats?.avgOrderValue.toFixed(0)}</h3>
                                             <p className="text-xs text-green-500 mt-1">+0% from last week</p>
                                         </div>
                                         <div className="p-3 bg-orange-100 rounded-full text-orange-600">

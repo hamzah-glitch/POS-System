@@ -36,6 +36,8 @@ export default function CashierDashboard() {
                     ]);
                     setProducts(productsData);
                     setCategories(categoriesData);
+                } else {
+                    console.warn('No storeId found for user. Products cannot be loaded.');
                 }
             } catch (error) {
                 console.error('Failed to fetch data:', error);
@@ -194,7 +196,7 @@ export default function CashierDashboard() {
                                         <h3 className="font-medium text-gray-800 line-clamp-2 text-sm mb-1">{product.name}</h3>
                                         <div className="mt-auto flex justify-between items-center">
                                             <span className="text-xs text-gray-500 truncate max-w-[50%]">{product.category?.name}</span>
-                                            <span className="font-bold text-green-600">₹{product.sellingPrice}</span>
+                                            <span className="font-bold text-green-600">PKR {product.sellingPrice}</span>
                                         </div>
                                     </div>
                                 ))
@@ -231,7 +233,7 @@ export default function CashierDashboard() {
                                     <div key={item.id} className="flex items-center justify-between bg-white border border-gray-100 p-3 rounded-lg shadow-sm">
                                         <div className="flex-1">
                                             <h4 className="font-medium text-gray-800 line-clamp-1 text-sm">{item.name}</h4>
-                                            <div className="text-xs text-gray-500">₹{item.sellingPrice} x {item.quantity}</div>
+                                            <div className="text-xs text-gray-500">PKR {item.sellingPrice} x {item.quantity}</div>
                                         </div>
                                         <div className="flex items-center space-x-2">
                                             <button onClick={() => updateQuantity(item.id, -1)} className="w-6 h-6 flex items-center justify-center bg-gray-100 rounded hover:bg-gray-200 text-gray-600">-</button>
@@ -239,7 +241,7 @@ export default function CashierDashboard() {
                                             <button onClick={() => updateQuantity(item.id, 1)} className="w-6 h-6 flex items-center justify-center bg-gray-100 rounded hover:bg-gray-200 text-gray-600">+</button>
                                         </div>
                                         <div className="ml-3 font-bold text-gray-800 w-16 text-right text-sm">
-                                            ₹{item.sellingPrice * item.quantity}
+                                            PKR {item.sellingPrice * item.quantity}
                                         </div>
                                     </div>
                                 ))
@@ -285,7 +287,7 @@ export default function CashierDashboard() {
                                             onClick={() => setDiscountType('FIXED')}
                                             className={`px-3 py-1 rounded text-sm font-medium transition-colors ${discountType === 'FIXED' ? 'bg-white shadow text-gray-800' : 'text-gray-500 hover:text-gray-700'}`}
                                         >
-                                            ₹
+                                            PKR
                                         </button>
                                     </div>
                                 </div>
@@ -308,7 +310,7 @@ export default function CashierDashboard() {
                             <div className="pt-2 border-t border-gray-100">
                                 <div className="flex justify-between items-center mb-4">
                                     <div>
-                                        <div className="text-2xl font-bold text-green-600">₹{calculateTotal().toFixed(2)}</div>
+                                        <div className="text-2xl font-bold text-green-600">PKR {calculateTotal().toFixed(2)}</div>
                                         <div className="text-xs text-gray-500">Total Amount</div>
                                     </div>
                                 </div>
