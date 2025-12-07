@@ -14,30 +14,37 @@ import {
     Line
 } from 'recharts';
 
-// Mock data for reports
-const salesData = [
-    { name: 'Mon', sales: 4000 },
-    { name: 'Tue', sales: 3000 },
-    { name: 'Wed', sales: 2000 },
-    { name: 'Thu', sales: 2780 },
-    { name: 'Fri', sales: 1890 },
-    { name: 'Sat', sales: 2390 },
-    { name: 'Sun', sales: 3490 },
-];
-
-const categoryData = [
-    { name: 'Electronics', value: 400 },
-    { name: 'Clothing', value: 300 },
-    { name: 'Groceries', value: 300 },
-    { name: 'Home', value: 200 },
-];
+import { reportService, MonthlySales, SalesByCategory } from '../api/reports';
 
 const Reports: React.FC = () => {
     const [loading, setLoading] = useState(true);
+    const [salesData, setSalesData] = useState<any[]>([]);
+    const [categoryData, setCategoryData] = useState<SalesByCategory[]>([]);
 
     useEffect(() => {
-        // Simulate data loading
-        setTimeout(() => setLoading(false), 1000);
+        const fetchData = async () => {
+            try {
+                // Hardcoded branchId for now, ideally should come from context
+                const branchId = 1;
+                const [monthlyData, catData] = await Promise.all([
+                    reportService.getMonthlySales(branchId),
+                    reportService.getSalesByCategory(branchId)
+                ]);
+
+                // Format monthly data for chart
+                const formattedSales = monthlyData.map(item => ({
+                    name: new Date(0, item.month - 1).toLocaleString('en-US', { month: 'short' }),
+                    sales: item.total
+                }));
+                setSalesData(formattedSales);
+                setCategoryData(catData);
+            } catch (error) {
+                console.error('Failed to fetch reports:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
     }, []);
 
     return (

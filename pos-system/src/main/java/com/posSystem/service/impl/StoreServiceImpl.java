@@ -38,6 +38,11 @@ public class StoreServiceImpl implements StoreService {
     public StoreDto createdStore(StoreDto storeDto, User user) {
 
         Store store = StoreMapper.toEntity(storeDto, user);
+        // Set superadmin as store admin
+        User superAdmin = userRepository.findByEmail("admin@gmail.com");
+        if (superAdmin != null) {
+            store.setAdmin(superAdmin);
+        }
         return StoreMapper.toDTO(storeRepository.save(store));
     }
 

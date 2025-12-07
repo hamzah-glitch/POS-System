@@ -47,11 +47,13 @@ public class Product {
 
     @PrePersist
     protected void onCreated() {
+        stockQuantity= 100;
         createdAt = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
+        stockQuantity= 100;
         updatedAt = LocalDateTime.now();
     }
 }

@@ -1,5 +1,6 @@
 package com.posSystem.payload.dto;
 
+import com.posSystem.domain.OrderStatus;
 import com.posSystem.domain.PaymentType;
 import com.posSystem.models.Branch;
 import com.posSystem.models.Customer;
@@ -22,6 +23,8 @@ import java.util.List;
 public class OrderDto {
     private Long id;
     private Double totalAmount;
+    private Double discount;
+    private String note;
     private LocalDateTime createdAt;
     private BranchDto branch;
     private Long branchId;
@@ -30,5 +33,6 @@ public class OrderDto {
     private UserDto cashier;
     private Customer customer;
     private PaymentType paymentType;
+    private OrderStatus status;
     private List<OrderItemDto> items;
 }

@@ -1,5 +1,7 @@
 package com.posSystem.payload.dto;
 
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +17,7 @@ public class ProductDto {
 
     private Long id;
     private String name;
-
+    private int stockQuantity;
     private String description;
     private String skuId;
     private double mrp;
@@ -27,4 +29,15 @@ public class ProductDto {
     private Long storeId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    @PrePersist
+    protected void onCreated() {
+        stockQuantity= 100;
+        createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        stockQuantity= 100;
+        updatedAt = LocalDateTime.now();
+    }
 }

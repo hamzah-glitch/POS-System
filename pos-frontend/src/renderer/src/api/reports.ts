@@ -1,6 +1,4 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8080/api/reports';
+import api from './axios';
 
 export interface MonthlySales {
     month: number;
@@ -15,12 +13,12 @@ export interface SalesByCategory {
 
 export const reportService = {
     getMonthlySales: async (branchId: number, year: number = new Date().getFullYear()): Promise<MonthlySales[]> => {
-        const response = await axios.get(`${API_URL}/monthly-sales/${branchId}`, { params: { year } });
+        const response = await api.get(`/reports/monthly-sales/${branchId}`, { params: { year } });
         return response.data;
     },
 
     getSalesByCategory: async (branchId: number): Promise<SalesByCategory[]> => {
-        const response = await axios.get(`${API_URL}/sales-by-category/${branchId}`);
+        const response = await api.get(`/reports/sales-by-category/${branchId}`);
         return response.data;
     }
 };

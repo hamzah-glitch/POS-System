@@ -20,53 +20,46 @@ public class OrderController {
     public ResponseEntity<OrderDto> createOrder(
             @RequestBody OrderDto orderDto) throws Exception {
         return ResponseEntity.ok(
-                orderService.createOrder(orderDto)
-        );
+                orderService.createOrder(orderDto));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<OrderDto> getOrderById(
             @PathVariable Long id) throws Exception {
         return ResponseEntity.ok(
-                orderService.getOrderById(id)
-        );
+                orderService.getOrderById(id));
     }
 
     @GetMapping("/branch/{branchId}")
     public ResponseEntity<List<OrderDto>> getOrderByBranch(
             @PathVariable Long branchId,
-            @RequestParam(required = false)Long customerId,
-            @RequestParam(required = false)Long cashierId,
-            @RequestParam(required = false)PaymentType paymentType,
-            @RequestParam(required = false)OrderStatus status
-            ) throws Exception {
+            @RequestParam(required = false) Long customerId,
+            @RequestParam(required = false) Long cashierId,
+            @RequestParam(required = false) PaymentType paymentType,
+            @RequestParam(required = false) OrderStatus status) throws Exception {
         return ResponseEntity.ok(
-                orderService.getOrdersByBranch(branchId,customerId,cashierId,paymentType,status)
-        );
+                orderService.getOrdersByBranch(branchId, customerId, cashierId, paymentType, status));
     }
 
     @GetMapping("/cashier/{id}")
     public ResponseEntity<List<OrderDto>> getOrderByCashierId(
             @PathVariable Long id) throws Exception {
         return ResponseEntity.ok(
-                orderService.getOrderByCashier(id)
-        );
+                orderService.getOrderByCashier(id));
     }
 
     @GetMapping("/today/branch/{id}")
     public ResponseEntity<List<OrderDto>> getTodayOrder(
             @PathVariable Long id) throws Exception {
         return ResponseEntity.ok(
-                orderService.getTodayOrdersByBranchId(id)
-        );
+                orderService.getTodayOrdersByBranchId(id));
     }
 
     @GetMapping("/customer/{id}")
     public ResponseEntity<List<OrderDto>> getCustomersOrder(
             @PathVariable Long id) throws Exception {
         return ResponseEntity.ok(
-                orderService.getOrdersByCustomerId(id)
-        );
+                orderService.getOrdersByCustomerId(id));
     }
 
     @GetMapping("/recent/{branchId}")
@@ -74,6 +67,14 @@ public class OrderController {
             @PathVariable Long branchId) throws Exception {
         return ResponseEntity.ok(
                 orderService.getTop5RecentOrdersByBranchId(branchId)
+        );
+
+    }
+    @PostMapping("/{id}/refund")
+    public ResponseEntity<OrderDto> refundOrder(
+            @PathVariable Long id) throws Exception {
+        return ResponseEntity.ok(
+                orderService.refundOrder(id)
         );
     }
 

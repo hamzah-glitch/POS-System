@@ -5,6 +5,7 @@ import com.posSystem.domain.PaymentType;
 import com.posSystem.mapper.OrderMapper;
 import com.posSystem.models.*;
 import com.posSystem.payload.dto.OrderDto;
+import com.posSystem.repository.InventoryRepository;
 import com.posSystem.repository.OrderItemRepository;
 import com.posSystem.repository.OrderRepository;
 import com.posSystem.repository.ProductRepository;
@@ -27,6 +28,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
+    private final InventoryRepository inventoryRepository;
 
     @Override
     public OrderDto createOrder(OrderDto orderDto) throws Exception {
@@ -41,6 +43,9 @@ public class OrderServiceImpl implements OrderService {
                 .cashier(cashier)
                 .customer(orderDto.getCustomer())
                 .paymentType(orderDto.getPaymentType())
+                .discount(orderDto.getDiscount() != null ? orderDto.getDiscount() : 0.0)
+                .note(orderDto.getNote())
+                .status(OrderStatus.COMPLETED)
                 .build();
 
         List<OrderItem> orderItems = orderDto.getItems().stream().map(
@@ -49,6 +54,26 @@ public class OrderServiceImpl implements OrderService {
                             .orElseThrow(
                                     () -> new EntityNotFoundException(
                                             "product not found"));
+
+                    if (product.getStockQuantity() < orderItemDto.getQuantity()) {
+                        throw new RuntimeException(
+                                "Insufficient stock for product: " + product.getName());
+                    }
+
+                    // Update Product Stock
+                    product.setStockQuantity(
+                            product.getStockQuantity() - orderItemDto.getQuantity());
+                    productRepository.save(product);
+
+                    // Update Branch Inventory
+                    Inventory inventory = inventoryRepository
+                            .findByProductIdAndBranchId(product.getId(), branch.getId());
+                    if (inventory != null) {
+                        inventory.setQuantity(
+                                inventory.getQuantity() - orderItemDto.getQuantity());
+                        inventoryRepository.save(inventory);
+                    }
+
                     return OrderItem.builder()
                             .product(product)
                             .quantity(orderItemDto.getQuantity())
@@ -56,9 +81,10 @@ public class OrderServiceImpl implements OrderService {
                             .order(order)
                             .build();
                 }).toList();
-        double total = orderItems.stream().mapToDouble(
+        double subtotal = orderItems.stream().mapToDouble(
                 OrderItem::getPrice).sum();
-        order.setTotalAmount(total);
+        double discount = order.getDiscount() != null ? order.getDiscount() : 0.0;
+        order.setTotalAmount(Math.max(0, subtotal - discount));
         order.setItems(orderItems);
 
         Order savedOrder = orderRepository.save(order);
@@ -84,6 +110,7 @@ public class OrderServiceImpl implements OrderService {
                                 order.getCashier().getId().equals(cashierId))
                 .filter(order -> paymentType == null ||
                         order.getPaymentType().equals(paymentType))
+                .filter(order -> status == null || order.getStatus() == status)
                 .map(OrderMapper::toDto).collect(Collectors.toList());
     }
 
@@ -127,5 +154,39 @@ public class OrderServiceImpl implements OrderService {
                 .stream().map(
                         OrderMapper::toDto)
                 .collect(Collectors.toList());
+
+
+    }
+    @Override
+    public OrderDto refundOrder(Long id) throws Exception {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new Exception("Order not found with id " + id));
+
+        if (order.getStatus() == OrderStatus.REFUNDED) {
+            throw new Exception("Order is already refunded");
+        }
+
+        // Restore stock
+        for (OrderItem item : order.getItems()) {
+            Product product = item.getProduct();
+
+            // Restore Product Stock
+            product.setStockQuantity(product.getStockQuantity() + item.getQuantity());
+            productRepository.save(product);
+
+            // Restore Branch Inventory
+            if (order.getBranch() != null) {
+                Inventory inventory = inventoryRepository.findByProductIdAndBranchId(product.getId(),
+                        order.getBranch().getId());
+                if (inventory != null) {
+                    inventory.setQuantity(inventory.getQuantity() + item.getQuantity());
+                    inventoryRepository.save(inventory);
+                }
+            }
+        }
+
+        order.setStatus(OrderStatus.REFUNDED);
+        Order savedOrder = orderRepository.save(order);
+        return OrderMapper.toDto(savedOrder);
     }
 }

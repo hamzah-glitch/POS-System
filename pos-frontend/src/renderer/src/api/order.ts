@@ -13,13 +13,31 @@ export interface Order {
     customerName: string;
     cashierName: string;
     totalAmount: number;
-    paymentType: 'CASH' | 'CARD' | 'UPI';
+    discount?: number;
+    note?: string;
+    paymentType: 'CASH' | 'CARD' | 'ONLINE';
     status: 'COMPLETE' | 'REFUNDED';
     createdAt: string;
     items: OrderItem[];
 }
 
+export interface CreateOrderDto {
+    customerId?: number;
+    paymentType: 'CASH' | 'CARD' | 'ONLINE';
+    discount?: number;
+    note?: string;
+    items: {
+        productId: number;
+        quantity: number;
+    }[];
+}
+
 export const orderService = {
+    createOrder: async (orderData: CreateOrderDto) => {
+        const response = await axios.post<Order>('/orders', orderData);
+        return response.data;
+    },
+
     getOrdersByBranch: async (
         branchId: number,
         filters?: {
@@ -39,6 +57,11 @@ export const orderService = {
 
     getOrderById: async (id: number) => {
         const response = await axios.get<Order>(`/orders/${id}`);
+        return response.data;
+    },
+
+    refundOrder: async (id: number) => {
+        const response = await axios.post<Order>(`/orders/${id}/refund`);
         return response.data;
     }
 };

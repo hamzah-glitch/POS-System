@@ -1,6 +1,4 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8080/api/sales';
+import api from './axios';
 
 export interface SalesStats {
     totalSales: number;
@@ -21,17 +19,17 @@ export interface PaymentMethodStats {
 
 export const salesService = {
     getStats: async (branchId: number): Promise<SalesStats> => {
-        const response = await axios.get(`${API_URL}/stats/${branchId}`);
+        const response = await api.get(`/sales/stats/${branchId}`);
         return response.data;
     },
 
     getDailySales: async (branchId: number, days: number = 7): Promise<DailySales[]> => {
-        const response = await axios.get(`${API_URL}/daily/${branchId}`, { params: { days } });
+        const response = await api.get(`/sales/daily/${branchId}`, { params: { days } });
         return response.data;
     },
 
     getSalesByPaymentMethod: async (branchId: number): Promise<PaymentMethodStats[]> => {
-        const response = await axios.get(`${API_URL}/payment-methods/${branchId}`);
+        const response = await api.get(`/sales/payment-methods/${branchId}`);
         return response.data;
     }
 };

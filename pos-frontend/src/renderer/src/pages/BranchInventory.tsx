@@ -101,6 +101,11 @@ export default function BranchInventory() {
                 toast.success('Inventory updated successfully');
             } else {
                 // Create
+                console.log('Creating inventory with:', {
+                    branchId: branchId,
+                    productId: parseInt(formData.productId),
+                    quantity: parseInt(formData.quantity)
+                });
                 await inventoryService.createInventory({
                     branchId: branchId,
                     productId: parseInt(formData.productId),

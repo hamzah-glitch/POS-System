@@ -12,6 +12,9 @@ import Alerts from './pages/Alerts';
 import Sales from './pages/Sales';
 import Reports from './pages/Reports';
 import CashierCustomers from './pages/CashierCustomers';
+import CashierOrders from './pages/CashierOrders';
+import CashierReturns from './pages/CashierReturns';
+import CashierShift from './pages/CashierShift';
 import BranchManagerDashboard from './pages/BranchManagerDashboard';
 import BranchInventory from './pages/BranchInventory';
 import BranchOrders from './pages/BranchOrders';
@@ -26,7 +29,10 @@ function App(): React.JSX.Element {
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/cashier" element={<CashierDashboard />} />
+        <Route path="/cashier/history" element={<CashierOrders />} />
+        <Route path="/cashier/returns" element={<CashierReturns />} />
         <Route path="/cashier/customers" element={<CashierCustomers />} />
+        <Route path="/cashier/shift" element={<CashierShift />} />
         <Route path="/branch-dashboard" element={<BranchManagerDashboard />} />
         <Route path="/branch/orders" element={<BranchOrders />} />
         <Route path="/branch/refunds" element={<BranchRefunds />} />

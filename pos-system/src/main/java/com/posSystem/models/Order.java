@@ -1,5 +1,6 @@
 package com.posSystem.models;
 
+import com.posSystem.domain.OrderStatus;
 import com.posSystem.domain.PaymentType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,6 +21,8 @@ public class Order {
     private Long id;
 
     private Double totalAmount;
+    private Double discount;
+    private String note;
     private LocalDateTime createdAt;
     @ManyToOne
     private Branch branch;
@@ -32,8 +35,11 @@ public class Order {
 
     private PaymentType paymentType;
 
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+
     @PrePersist
-    protected void onCreated(){
+    protected void onCreated() {
         createdAt = LocalDateTime.now();
     }
 

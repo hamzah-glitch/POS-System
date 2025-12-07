@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Plus, Edit2, Trash2, User, Phone, Mail, X, Save } from 'lucide-react';
+import { Search, Plus, Edit2, Trash2, User, Phone, Mail, X, Save, Menu } from 'lucide-react';
 import CashierSidebar from '../components/CashierSidebar';
 import { customerService, Customer } from '../api/customer';
 import { shiftService } from '../api/shift';
@@ -53,11 +53,12 @@ export default function CashierCustomers() {
     const handleLogout = async () => {
         try {
             await shiftService.endShift();
+        } catch (error) {
+            console.error('Error ending shift:', error);
+        } finally {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             navigate('/');
-        } catch (error) {
-            console.error('Error ending shift:', error);
         }
     };
 
@@ -132,169 +133,159 @@ export default function CashierCustomers() {
                             onClick={() => setIsSidebarOpen(true)}
                             className="p-2 hover:bg-gray-100 rounded-lg text-gray-600"
                         >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                            <Menu className="w-6 h-6" />
                         </button>
                         <h1 className="text-xl font-bold text-gray-800">Customers</h1>
                     </div>
+                    <button
+                        onClick={openCreateModal}
+                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center shadow-sm"
+                    >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Customer
+                    </button>
                 </header>
 
-                <div className="flex-1 p-6 overflow-hidden flex flex-col">
-                    {/* Actions Bar */}
-                    <div className="flex justify-between items-center mb-6">
-                        <div className="relative w-96">
-                            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                                <Search className="w-5 h-5" />
-                            </span>
+                <div className="flex-1 overflow-y-auto p-6">
+                    {/* Search Bar */}
+                    <div className="mb-6">
+                        <div className="relative">
                             <input
                                 type="text"
                                 placeholder="Search customers..."
-                                className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
+                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 bg-white shadow-sm"
                                 value={searchQuery}
                                 onChange={(e) => handleSearch(e.target.value)}
                             />
+                            <Search className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
                         </div>
-                        <button
-                            onClick={openCreateModal}
-                            className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 flex items-center shadow-sm"
-                        >
-                            <Plus className="w-5 h-5 mr-2" />
-                            Add Customer
-                        </button>
                     </div>
 
                     {/* Customers List */}
-                    <div className="flex-1 overflow-y-auto bg-white rounded-xl shadow-sm border border-gray-100">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {loading ? (
-                            <div className="flex items-center justify-center h-full text-gray-500">Loading customers...</div>
+                            <div className="col-span-full text-center py-8 text-gray-500">Loading customers...</div>
                         ) : customers.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center h-full text-gray-500">
-                                <User className="w-16 h-16 mb-4 opacity-20" />
-                                <p>No customers found</p>
-                            </div>
+                            <div className="col-span-full text-center py-8 text-gray-500">No customers found</div>
                         ) : (
-                            <table className="w-full text-left">
-                                <thead className="bg-gray-50 border-b border-gray-100">
-                                    <tr>
-                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Name</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Contact Info</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Joined Date</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                    {customers.map((customer) => (
-                                        <tr key={customer.id} className="hover:bg-gray-50 transition-colors">
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center">
-                                                    <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold mr-3">
-                                                        {customer.fullName.charAt(0).toUpperCase()}
-                                                    </div>
-                                                    <span className="font-medium text-gray-900">{customer.fullName}</span>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <div className="flex flex-col space-y-1">
-                                                    <div className="flex items-center text-sm text-gray-600">
-                                                        <Mail className="w-4 h-4 mr-2 text-gray-400" />
-                                                        {customer.email}
-                                                    </div>
-                                                    <div className="flex items-center text-sm text-gray-600">
-                                                        <Phone className="w-4 h-4 mr-2 text-gray-400" />
-                                                        {customer.phone}
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 text-sm text-gray-500">
-                                                {customer.createdAt ? new Date(customer.createdAt).toLocaleDateString() : 'N/A'}
-                                            </td>
-                                            <td className="px-6 py-4 text-right space-x-2">
-                                                <button
-                                                    onClick={() => openEditModal(customer)}
-                                                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                                    title="Edit"
-                                                >
-                                                    <Edit2 className="w-4 h-4" />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(customer.id)}
-                                                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                                    title="Delete"
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                            customers.map(customer => (
+                                <div key={customer.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div className="flex items-center">
+                                            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold mr-3">
+                                                {customer.fullName.charAt(0).toUpperCase()}
+                                            </div>
+                                            <div>
+                                                <h3 className="font-semibold text-gray-900">{customer.fullName}</h3>
+                                                <p className="text-xs text-gray-500">ID: #{customer.id}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex space-x-1">
+                                            <button
+                                                onClick={() => openEditModal(customer)}
+                                                className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                            >
+                                                <Edit2 className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(customer.id)}
+                                                className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className="flex items-center text-sm text-gray-600">
+                                            <Mail className="w-4 h-4 mr-2 text-gray-400" />
+                                            {customer.email || 'No email'}
+                                        </div>
+                                        <div className="flex items-center text-sm text-gray-600">
+                                            <Phone className="w-4 h-4 mr-2 text-gray-400" />
+                                            {customer.phone || 'No phone'}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
                         )}
                     </div>
                 </div>
-            </main>
 
-            {/* Modal */}
-            {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
-                        <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                            <h2 className="text-lg font-bold text-gray-800">
-                                {editingCustomer ? 'Edit Customer' : 'Add New Customer'}
-                            </h2>
-                            <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600">
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-                        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                                <input
-                                    type="text"
-                                    required
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-                                    value={formData.fullName}
-                                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                <input
-                                    type="email"
-                                    required
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                                <input
-                                    type="tel"
-                                    required
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-                                    value={formData.phone}
-                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                />
-                            </div>
-                            <div className="pt-4 flex space-x-3">
+                {/* Modal */}
+                {isModalOpen && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 overflow-hidden">
+                            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                                <h2 className="text-lg font-bold text-gray-800">
+                                    {editingCustomer ? 'Edit Customer' : 'Add New Customer'}
+                                </h2>
                                 <button
-                                    type="button"
                                     onClick={() => setIsModalOpen(false)}
-                                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"
+                                    className="text-gray-400 hover:text-gray-600 transition-colors"
                                 >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium flex items-center justify-center"
-                                >
-                                    <Save className="w-4 h-4 mr-2" />
-                                    Save Customer
+                                    <X className="w-5 h-5" />
                                 </button>
                             </div>
-                        </form>
+                            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                    <div className="relative">
+                                        <User className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
+                                        <input
+                                            type="text"
+                                            required
+                                            className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                            value={formData.fullName}
+                                            onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                    <div className="relative">
+                                        <Mail className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
+                                        <input
+                                            type="email"
+                                            className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                            value={formData.email}
+                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                                    <div className="relative">
+                                        <Phone className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
+                                        <input
+                                            type="tel"
+                                            required
+                                            className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                            value={formData.phone}
+                                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="pt-4 flex space-x-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsModalOpen(false)}
+                                        className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium flex items-center justify-center"
+                                    >
+                                        <Save className="w-4 h-4 mr-2" />
+                                        Save Customer
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+            </main>
         </div>
     );
 }
